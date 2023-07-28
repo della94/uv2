@@ -1,0 +1,205 @@
+drop table if exists domaine;
+
+drop table if exists encadreurs;
+
+drop table if exists enseignant;
+
+drop table if exists etudiant;
+
+drop table if exists horaire;
+
+drop table if exists jury;
+
+drop table if exists roles;
+
+drop table if exists salle_soutenance;
+
+drop table if exists soutenance;
+
+drop table if exists theme;
+
+drop table if exists utilisateur;
+
+/*==============================================================*/
+/* Table : domaine                                              */
+/*==============================================================*/
+create table domaine
+(
+   id_domaine           int not null,
+   nom_domaine          varchar(254),
+   primary key (id_domaine)
+);
+
+/*==============================================================*/
+/* Table : encadreurs                                           */
+/*==============================================================*/
+create table encadreurs
+(
+   id_encadreur         int not null,
+   id_etudiant          int not null,
+   id_utilisateur       int not null,
+   nom                  int,
+   prenom               int,
+   type_enc             varchar(254),
+   adresse              varchar(254),
+   telephone            int,
+   email                varchar(254),
+   primary key (id_encadreur)
+);
+
+/*==============================================================*/
+/* Table : enseignant                                           */
+/*==============================================================*/
+create table enseignant
+(
+   id_enseignant        int not null,
+   nom                  varchar(254),
+   prenom               int,
+   grade                varchar(254),
+   adresse              varchar(254),
+   telephone            int,
+   email                varchar(254),
+   primary key (id_enseignant)
+);
+
+/*==============================================================*/
+/* Table : etudiant                                             */
+/*==============================================================*/
+create table etudiant
+(
+   id_etudiant          int not null,
+   id_utilisateur       int not null,
+   id_soutenance        int not null,
+   id_domaine           int not null,
+   nom                  varchar(254),
+   prenom               varchar(254),
+   matricule            int,
+   adresse              varchar(254),
+   telephone            int,
+   email                varchar(254),
+   primary key (id_etudiant)
+);
+
+/*==============================================================*/
+/* Table : horaire                                              */
+/*==============================================================*/
+create table horaire
+(
+   id_horaire           int not null,
+   date_sout            datetime,
+   heure_sout           numeric(8,0),
+   primary key (id_horaire)
+);
+
+/*==============================================================*/
+/* Table : jury                                                 */
+/*==============================================================*/
+create table jury
+(
+   id_jury              int not null,
+   id_horaire           int not null,
+   id_enseignant        int,
+   id_utilisateur       int not null,
+   mbres_jury           varchar(254),
+   role_jury            varchar(254),
+   primary key (id_jury)
+);
+
+/*==============================================================*/
+/* Table : roles                                                */
+/*==============================================================*/
+create table roles
+(
+   id_roles             int not null,
+   id_utilisateur       int not null,
+   nom_role             varchar(254),
+   primary key (id_roles)
+);
+
+/*==============================================================*/
+/* Table : salle_soutenance                                     */
+/*==============================================================*/
+create table salle_soutenance
+(
+   id_salle             int not null,
+   num_salle            int,
+   primary key (id_salle)
+);
+
+/*==============================================================*/
+/* Table : soutenance                                           */
+/*==============================================================*/
+create table soutenance
+(
+   id_soutenance        int not null,
+   id_salle             int not null,
+   id_utilisateur       int not null,
+   id_horaire           int not null,
+   type_sout            varchar(254),
+   note_sout            int,
+   primary key (id_soutenance)
+);
+
+/*==============================================================*/
+/* Table : theme                                                */
+/*==============================================================*/
+create table theme
+(
+   id_theme             int not null,
+   id_etudiant          int not null,
+   nom_theme            varchar(254),
+   primary key (id_theme)
+);
+
+/*==============================================================*/
+/* Table : utilisateur                                          */
+/*==============================================================*/
+create table utilisateur
+(
+   id_utilisateur       int not null,
+   nom                  varchar(254),
+   prenom               varchar(254),
+   adresse              varchar(254),
+   telephone            varchar(254),
+   email                varchar(254),
+   primary key (id_utilisateur)
+);
+
+alter table encadreurs add constraint FK_Association_12 foreign key (id_utilisateur)
+      references utilisateur (id_utilisateur) on delete restrict on update restrict;
+
+alter table encadreurs add constraint FK_Association_3 foreign key (id_etudiant)
+      references etudiant (id_etudiant) on delete restrict on update restrict;
+
+alter table etudiant add constraint FK_Association_11 foreign key (id_utilisateur)
+      references utilisateur (id_utilisateur) on delete restrict on update restrict;
+
+alter table etudiant add constraint FK_Association_2 foreign key (id_domaine)
+      references domaine (id_domaine) on delete restrict on update restrict;
+
+alter table etudiant add constraint FK_Association_4 foreign key (id_soutenance)
+      references soutenance (id_soutenance) on delete restrict on update restrict;
+
+alter table jury add constraint FK_Association_10 foreign key (id_enseignant)
+      references enseignant (id_enseignant) on delete restrict on update restrict;
+
+alter table jury add constraint FK_Association_13 foreign key (id_utilisateur)
+      references utilisateur (id_utilisateur) on delete restrict on update restrict;
+
+alter table jury add constraint FK_Association_7 foreign key (id_horaire)
+      references horaire (id_horaire) on delete restrict on update restrict;
+
+alter table roles add constraint FK_Association_14 foreign key (id_utilisateur)
+      references utilisateur (id_utilisateur) on delete restrict on update restrict;
+
+alter table soutenance add constraint FK_Association_15 foreign key (id_utilisateur)
+      references utilisateur (id_utilisateur) on delete restrict on update restrict;
+
+alter table soutenance add constraint FK_Association_5 foreign key (id_horaire)
+      references horaire (id_horaire) on delete restrict on update restrict;
+
+alter table soutenance add constraint FK_Association_9 foreign key (id_salle)
+      references salle_soutenance (id_salle) on delete restrict on update restrict;
+
+alter table theme add constraint FK_Association_1 foreign key (id_etudiant)
+      references etudiant (id_etudiant) on delete restrict on update restrict;
